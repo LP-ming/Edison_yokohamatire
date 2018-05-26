@@ -1,1 +1,3 @@
 # Edison_yokohamatire
+这是为了学习Intel 的Edison芯片，参加集团内的技能竞赛而创建的
+会定期在这里更新edison学习和开发的相关进度和情报
