@@ -5,12 +5,10 @@
 #include "mraa.hpp"		
 
 // 针脚映射		
-static int servo_pin = 20;  //转向舵机 J18-7=20 PWM0
-static int oe_pin = 46;    //电平转换芯片使能 J20-5=46 GPIO46			
+static int servo_pin = 20;  //转向舵机 J18-7=20 PWM0	
 
 //引脚功能定义及初始化 	
 mraa::Pwm* servo = NULL;//转向舵机
-mraa::Gpio* txb0108_oe = NULL; //电平转换芯片使能
 
 void set_initialization()													
   {
@@ -21,9 +19,6 @@ void set_initialization()
     servo->period_ms(20);
     servo->write(0.051);
     //电平转换芯片初始化
-    txb0108_oe = new mraa::Gpio(oe_pin);
-    txb0108_oe->dir(mraa::DIR_OUT);
-    txb0108_oe->write(1);
   }	
 		
 //	异常处理程序	
@@ -33,10 +28,8 @@ void sig_handler(int signo)
       {		
        running = -1;		
       }			
-      servo->write(0);
-      txb0108_oe->write(0);    		
+      servo->write(0);   		
 }		
-
 
 /*********************************										
    周期 = 20ms时 小车角度 = 占空比												
@@ -52,7 +45,7 @@ int main(int argc, char **argv)
     set_initialization();				
     sleep(1);				
     while(running == 0)		
-    {			
+    {		
         servo->write(0.025);//0度	
         sleep(1000);
         servo->write(0.050);//45度
@@ -63,8 +56,8 @@ int main(int argc, char **argv)
         sleep(1000);
         servo->write(0.125);//180度
         sleep(1000);
-    }				
+    }	
     servo->write(0.0);		
-    delete servo;				
+    delete servo;	
     return 0;   		
 }		

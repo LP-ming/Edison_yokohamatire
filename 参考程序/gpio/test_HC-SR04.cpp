@@ -6,14 +6,12 @@
 #include "mraa.hpp"	
 
 // 针脚映射
-static int trig_pin = ??;  //HC-SR04触发 J18-7=20 GPIO??
-static int echo_pin = ??;  //HC-SR04接收 J20-5=46 GPIO??
-static int oe_pin = 46;    //电平转换芯片使能 J20-5=46 GPIO46	
+static int trig_pin = 31;  //HC-SR04触发 J19-4=31 GPIO44
+static int echo_pin = 32;  //HC-SR04接收 J19-5=32 GPIO46	
 
 //引脚功能定义及初始化
 mraa::Gpio* us_trig = NULL;	//HC-SR04触发
 mraa::Gpio* us_echo = NULL;	//HC-SR04接收
-mraa::Gpio* txb0108_oe = NULL; //电平转换芯片使能 
 
 void set_initialization()													
   {
@@ -25,10 +23,6 @@ void set_initialization()
     us_echo = new mraa::Gpio(echo_pin);
     us_echo->dir(mraa::DIR_IN);
     us_echo->read();
-    //电平转换芯片初始化
-    txb0108_oe = new mraa::Gpio(oe_pin);
-    txb0108_oe->dir(mraa::DIR_OUT);
-    txb0108_oe->write(1);
   }
 
 //	异常处理程序	
@@ -38,8 +32,7 @@ void sig_handler(int signo)
       {		
        running = -1;		
       }			
-      us_trig->write(0);
-      txb0108_oe->write(0);    		
+      us_trig->write(0); 		
 }
 //HC-SR04测距
 int measure_distance(us_trig, us_echo){			
@@ -101,10 +94,8 @@ int main(int argc, char **argv)
         sleep(3);//测距周期60ms以上
     }				
     us_trig->write(0);	
-    txb0108_oe->write(0);	
     
     delete us_echo;	
-    delete us_trig;	
-    delete txb0108_oe;	   					
+    delete us_trig;	   					
     return 0;   		
 }
