@@ -32,6 +32,7 @@ void set_initialization()
   }	
 
 //	异常处理程序
+int running = 0;
 void sig_handler(int signo)	
 {	
     if(signo == SIGINT)	
@@ -46,7 +47,6 @@ void sig_handler(int signo)
 	
 int main(int argc, char **argv)	
 {
-    int running = 0;
     int i;	
     float cycle = 0.1;	
     signal(SIGINT, sig_handler);	
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
     m_dir_l->write(1);	
 	
     //调速	   
-    for(i=0;i<10;i++)
+    for(i=0;i<8;i++)
     {          	
 	    m_speed->write(cycle);
         cycle += 0.1;	
@@ -72,7 +72,7 @@ int main(int argc, char **argv)
     m_dir_l->write(0);	
 	
     //调速	
-    for(i=0;i<10;i++)	
+    for(i=0;i<8;i++)	
     {  	
 	    m_speed->write(cycle);
       	cycle -= 0.1;
