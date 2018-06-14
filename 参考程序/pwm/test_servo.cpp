@@ -1,7 +1,9 @@
 #include <stdlib.h>		
 #include <unistd.h>		
 #include <stdio.h>		
-#include <signal.h>		
+#include <signal.h>	
+#include <iostream>
+
 #include "mraa.hpp"		
 
 // 针脚映射		
@@ -21,12 +23,13 @@ void set_initialization()
     //电平转换芯片初始化
   }	
 		
-//	异常处理程序	
+//	异常处理程序
+volatile sig_atomic_t flag = 1;	
 void sig_handler(int signo)		
 {		
     if(signo == SIGINT)		
       {		
-       running = -1;		
+       flag = 0;		
       }			
       servo->write(0);   		
 }		
@@ -40,22 +43,34 @@ void sig_handler(int signo)
 
 int main(int argc, char **argv)		
 {	
-    int running = 0;	
     signal(SIGINT, sig_handler);		
     set_initialization();				
     sleep(1);				
-    while(running == 0)		
+    while(flag == 1)		
     {		
-        servo->write(0.025);//0度	
-        sleep(1000);
-        servo->write(0.050);//45度
-        sleep(1000);
-        servo->write(0.075);//90度
-        sleep(1000);
-        servo->write(0.100);//135度
-        sleep(1000);
-        servo->write(0.125);//180度
-        sleep(1000);
+        float tag =0.025;
+        // servo->write(0.025);//0度	
+        // sleep(1000);
+        for(int i =0; i<6;i++){
+          tag = tag +(0.008*i);
+          servo->write(tag);
+          std::cout << tag <<std::endl;
+          sleep (3);
+        }
+        // servo->write(0.050);//45度
+        // std::cout << tag <<std::endl;
+        // sleep(2);
+        // servo->write(0.075);//90度
+        // std::cout << "90度" <<std::endl;
+        // sleep(2);
+        // servo->write(0.100);//135度
+        // std::cout << "135度" <<std::endl;
+        // sleep(2);
+        // servo->write(0.075);//45度
+        // std::cout << "90度" <<std::endl;
+        // sleep(2);
+        // servo->write(0.125);//180度
+        // sleep(1000);
     }	
     servo->write(0.0);		
     delete servo;	
