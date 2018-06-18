@@ -2,7 +2,9 @@
 #include <unistd.h>		
 #include <stdio.h>		
 #include <signal.h>
+#include <string.h>
 #include<sys/time.h>
+
 #include "mraa.hpp"	
 
 // 针脚映射
@@ -25,19 +27,19 @@ void set_initialization()
     us_echo->read();
   }
 
-//	异常处理程序	
+//	异常处理程序
+int running = 0;	
 void sig_handler(int signo)		
 {		
     if(signo == SIGINT)		
       {		
        running = -1;		
       }			
-      us_trig->write(0); 		
+      us_trig->write(0);		
 }
 //HC-SR04测距
-int measure_distance(us_trig, us_echo){			
-			
-	int on_flag, off_flag;		
+int measure_distance(){
+    int on_flag, off_flag;		
 	struct timeval t_on, t_off, t_start, t_judge;		
 	float duration, distance;		
 			
@@ -78,7 +80,8 @@ int measure_distance(us_trig, us_echo){
     }		
     duration=t_off.tv_usec-t_on.tv_usec;
 	return distance=duration/58;
-}			
+}	
+			
 		
 int main(int argc, char **argv)		
 {	
@@ -89,7 +92,7 @@ int main(int argc, char **argv)
 
     while(running == 0)		
     {
-        distance1=measure_distance(us_echo, us_echo);
+        distance1=measure_distance();
         printf("障碍物距离: %fcm\n",distance1);
         sleep(3);//测距周期60ms以上
     }				

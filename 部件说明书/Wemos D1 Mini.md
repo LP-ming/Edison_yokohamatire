@@ -97,5 +97,8 @@ Motor M1(0X30,_MOTOR_A, 1000)
 
 ![](https://diyprojects.io/wp-content/uploads/2017/06/wemos-d1-mini-motor-shield-v1.jpg)
 
+### 原版说明书链接
+https://diyprojects.io/test-shield-motor-i2c-wemos-d1-mini-pro-drive-2-motors-15vdc/#.Wuzh0MNubIU
+
 ## END
 
