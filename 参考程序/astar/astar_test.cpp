@@ -1,57 +1,41 @@
-﻿#include <stdlib.h>								
-#include <signal.h>								
-#include <stdio.h>								
-#include <unistd.h>								
-#include <string.h>	
-#include <cassert>
-#include <cstring>
-#include <algorithm>
+﻿#include <algorithm>
 #include <limits.h>
 #include <memory.h>
 #include <stddef.h>
-#include <malloc.h>
 #include <assert.h>
 #include <iostream>
-#include <exception>
-#include<sys/time.h>
-#include<time.h>
-#include<math.h>
 
 #include "astar.h"
 #include "blockallocator.h"				
 
-				
 /*********************************************
-
               起点---终点数据解析
-
 *********************************************/
 int areaCode1x;
 int areaCode1y;
 int areaCode2x;
 int areaCode2y;
-//将提供的4个目标和1个起点值输入
-char target_start[8]={'A','0','F','0','A','5','F','5'};
-char target_end[8]={'F','5','A','5','A','0','F','0'};
 
-void move_target(int c)
+void move_target(char y1,char x1,char y2,char x2)
   {
-   areaCode1y=target_start[c]-16-48-1;
-   areaCode1x=target_start[c+1]-48; 
-   areaCode2y=target_end[c]-16-48-1;
-   areaCode2x=target_end[c+1]-48;
-   printf("起点区域坐标=%c%c\n\n",target_end[c],target_end[c+1]);
-   printf("终点区域坐标=%c%c\n\n",target_end[c],target_end[c+1]);
+    //坐标由字符转数字
+    areaCode1y=y1-16-48-1;
+    areaCode1x=x1-48; 
+    areaCode2y=y2-16-48-1;
+    areaCode2x=x2-48;
+    //输出相关信息
+    std::cout<<"\n********************************"<<std::endl;
+    std::cout<<"起点区域坐标="<<y1<<x1<<"("<<areaCode1x<<areaCode1y<<")"<<std::endl;
+    std::cout<<"终点区域坐标="<<y2<<x2<<"("<<areaCode2x<<areaCode2y<<")"<<std::endl;
   }
 
 /********************************************	
-
             搜索函数设定&执行
-
 ********************************************/
-int target1x;//终点坐标x
-int target1y;//终点坐标y
+char target1x;//终点坐标x
+char target1y;//终点坐标y
 int astar_go1_len;//规划路径长度
+
 void astar_go1()
 {
     char maps1[6][6] =
@@ -78,40 +62,43 @@ void astar_go1()
     BlockAllocator allocator;
     AStar algorithm(&allocator);
     auto path = algorithm.find(param1);
-    // target1x=path[0].x;
-    // target1y=path[0].y;
 
-    for(int i=0;i<20;i++)
+    for(int i=0;i<30;i++)
         {
-            if(path[i].x>=0&&path[i].x<=5&&path[i].y>=0&&path[i].y<=5)
-            {
-                target1x=path[i].x+16+48+1;
-                target1y=path[i].y+48;   
-                printf("第%d步：%c,%c\n",i,target1x,target1y);
-            }
+            if(path[i].x==0&&path[i].y==0)
+                {
+                    astar_go1_len=i;
+                    std::cout<<"规划路径一共"<<astar_go1_len<<"步";
+                    std::cout<<"\n********************************\n\n\n"<<std::endl;
+                    break;
+                }
             else
-            {
-                astar_go1_len=i;
-                printf("规划路径一共%d步\n",astar_go1_len);
-            }
+                {
+                    target1x=path[i].x+48;
+                    target1y=path[i].y+16+48+1;   
+                    std::cout<<"第"<<i<<"步:"<<" "<<target1y<<target1x<<std::endl;
+                }
         }
 }
 
-/****************以下主程序*****************/
+/********************************************						
+
+	                主程序                    														
+
+********************************************/
 int main()														
-{		 												
- //遍历4个起点，终点，规划出4个路径
- for(int i=0;i<4;i++)
-  {	   
-    move_target(i*2);
-    astar_go1();
-    sleep(3);
-  }		
-   return 1;   								
+{
+    char y1,x1,x2,y2;  		 												
+    //输入起点，终点，规划出路径
+    std::cout<<"请输入起点 终点，并按回车计算路径"<<std::endl;
+    while(std::cin>>y1>>x1>>y2>>x2)
+        {
+            move_target(y1,x1,y2,x2);
+            astar_go1();
+            std::cout<<"请输入起点 终点，并按回车计算路径"<<std::endl;
+        }		
+    return 0;   								
 }
-
-
-
 
 /********************************************						
 
@@ -440,6 +427,7 @@ __end__:
     return paths;
 }
 
+/*
 /********************************************						
 
 	 blockallocator.cpp代码                     														
@@ -638,6 +626,6 @@ void BlockAllocator::clear()
     memset(free_lists_, 0, sizeof(free_lists_));
 }
 
-														
+									
 														
 														
