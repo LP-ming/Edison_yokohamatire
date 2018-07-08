@@ -47,9 +47,9 @@ void sig_handler(int signo)
 	
 int main(int argc, char **argv)	
 {
-    int i;	
-    float cycle = 0.1;	
-    signal(SIGINT, sig_handler);	
+  int i;	
+  float cycle = 0.1;	
+  signal(SIGINT, sig_handler);	
 	set_initialization();
 	sleep(1);		
   	
